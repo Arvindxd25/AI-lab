@@ -1,0 +1,41 @@
+grid = [
+    [0, 0, 0, 0],
+    [0, 1, 1, 0],
+    [0, 0, 0, 0],
+    [0, 1, 0, 0]
+]
+
+start = (0, 0)
+goal = (3, 3)
+
+# Internal state stores visited cells
+visited = set()
+path = []
+
+def navigate(pos):
+    if pos == goal:
+        path.append(pos)
+        return True
+
+    r, c = pos
+    visited.add(pos)
+    path.append(pos)
+
+    # Up, Down, Left, Right
+    moves = [(r-1, c), (r+1, c),
+             (r, c-1), (r, c+1)]
+
+    for nr, nc in moves:
+        if (0 <= nr < 4 and 0 <= nc < 4
+                and grid[nr][nc] == 0
+                and (nr, nc) not in visited):
+            if navigate((nr, nc)):
+                return True
+
+    path.pop()
+    return False
+
+if navigate(start):
+    print("Path:", path)
+else:
+    print("No path found")
