@@ -1,45 +1,36 @@
-# Goal: Put block A on block B
+N = 8
+board = [-1] * N
 
-def goal_stack_planning():
-    stack = ["On(A, B)", "Holding(A)", "Pickup(A)"]
+def safe(row, col):
+    for r in range(row):
+        if board[r] == col:
+            return False
 
-    facts = {
-        "OnTable(A)",
-        "Clear(A)",
-        "Clear(B)",
-        "HandEmpty"
-    }
+        if abs(board[r] - col) == abs(r - row):
+            return False
 
-    plan = []
+    return True
 
-    while stack:
-        goal = stack.pop()
+def solve(row):
+    if row == N:
+        return True
 
-        if goal == "On(A, B)":
-            if goal not in facts:
-                stack.extend(["Stack(A, B)", "Holding(A)"])
+    for col in range(N):
+        if safe(row, col):
+            board[row] = col
 
-        elif goal == "Holding(A)":
-            if goal not in facts:
-                stack.append("Pickup(A)")
+            if solve(row + 1):
+                return True
 
-        elif goal == "Pickup(A)":
-            if {"OnTable(A)", "Clear(A)", "HandEmpty"} <= facts:
-                plan.append("Pickup(A)")
-                facts.discard("OnTable(A)")
-                facts.discard("HandEmpty")
-                facts.add("Holding(A)")
+            board[row] = -1
 
-        elif goal == "Stack(A, B)":
-            if "Holding(A)" in facts and "Clear(B)" in facts:
-                plan.append("Stack(A, B)")
-                facts.discard("Holding(A)")
-                facts.discard("Clear(B)")
-                facts.add("On(A, B)")
-                facts.add("HandEmpty")
-                facts.add("Clear(A)")
+    return False
 
-    print("Plan:", plan)
-    print("Goal achieved:", "On(A, B)" in facts)
-
-goal_stack_planning()
+if solve(0):
+    for r in range(N):
+        print(" ".join(
+            "Q" if board[r] == c else "."
+            for c in range(N)
+        ))
+else:
+    print("No solution")
