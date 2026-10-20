@@ -1,0 +1,25 @@
+print("Welcome to AI Rule-Based Chatbot")
+print("Type 'bye' to exit.")
+
+while True:
+    user = input("You: ").lower().strip()
+
+    if user in ["hi", "hello"]:
+        print("Bot: Hello! How can I help?")
+    elif user == "how are you":
+        print("Bot: I am fine. Thank you!")
+    elif user == "what is your name":
+        print("Bot: I am an AI Chatbot.")
+    elif user == "who developed you":
+        print("Bot: I was developed for AI learning.")
+    elif user == "what is ai":
+        print("Bot: AI means Artificial Intelligence.")
+    elif user == "help":
+        print("Bot: I answer simple questions.")
+    elif user in ["thanks", "thank you"]:
+        print("Bot: You're welcome!")
+    elif user == "bye":
+        print("Bot: Goodbye!")
+        break
+    else:
+        print("Bot: Sorry, I don't understand.")
