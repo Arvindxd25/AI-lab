@@ -1,0 +1,47 @@
+from collections import deque
+
+initial = (("A", "Table"), ("B", "Table"), ("C", "Table"))
+goal = (("A", "B"), ("B", "C"), ("C", "Table"))
+
+def get_moves(state):
+    moves = []
+    blocked = {y for x, y in state if y != "Table"}
+
+    for block, pos in state:
+        if block in blocked:
+            continue
+
+        for target in ["Table", "A", "B", "C"]:
+            if target == block or target in blocked:
+                continue
+            if target == "Table" and pos == "Table":
+                continue
+
+            new = tuple(sorted(
+                (b, target if b == block else p) for b, p in state
+            ))
+            moves.append((new, f"Move {block} to {target}"))
+
+    return moves
+
+def bfs(start, goal):
+    queue = deque([(start, [])])
+    visited = {start}
+
+    while queue:
+        state, path = queue.popleft()
+        if state == goal:
+            return path
+
+        for new, action in get_moves(state):
+            if new not in visited:
+                visited.add(new)
+                queue.append((new, path + [action]))
+
+solution = bfs(initial, goal)
+
+print("Initial State:", initial)
+print("Goal State:", goal)
+print("BFS Solution:")
+for i, action in enumerate(solution or [], 1):
+    print(f"Step {i}: {action}")
