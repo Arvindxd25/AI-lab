@@ -1,0 +1,45 @@
+# Goal: Put block A on block B
+
+def goal_stack_planning():
+    stack = ["On(A, B)", "Holding(A)", "Pickup(A)"]
+
+    facts = {
+        "OnTable(A)",
+        "Clear(A)",
+        "Clear(B)",
+        "HandEmpty"
+    }
+
+    plan = []
+
+    while stack:
+        goal = stack.pop()
+
+        if goal == "On(A, B)":
+            if goal not in facts:
+                stack.extend(["Stack(A, B)", "Holding(A)"])
+
+        elif goal == "Holding(A)":
+            if goal not in facts:
+                stack.append("Pickup(A)")
+
+        elif goal == "Pickup(A)":
+            if {"OnTable(A)", "Clear(A)", "HandEmpty"} <= facts:
+                plan.append("Pickup(A)")
+                facts.discard("OnTable(A)")
+                facts.discard("HandEmpty")
+                facts.add("Holding(A)")
+
+        elif goal == "Stack(A, B)":
+            if "Holding(A)" in facts and "Clear(B)" in facts:
+                plan.append("Stack(A, B)")
+                facts.discard("Holding(A)")
+                facts.discard("Clear(B)")
+                facts.add("On(A, B)")
+                facts.add("HandEmpty")
+                facts.add("Clear(A)")
+
+    print("Plan:", plan)
+    print("Goal achieved:", "On(A, B)" in facts)
+
+goal_stack_planning()
